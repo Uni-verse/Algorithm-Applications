@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Anagram Tester</title>
+    </head>
+    <body>
+        <input id="input1" type="text" placeholder="Enter word here first">
+        <input id="input2" type="text" placeholder="Enter word last">
+        <br>
+        <label id="msg"></label>
+        <script>
+            (function(){
+                var swap = function(data, a, b){
+                    var tmp = data[a];
+                    data[a] = data[b];
+                    data[b] = tmp;
+                };
+                var sort = function(data){
+                    var len = data.length;
+                    do {
+                        for(var i = 0; i < len - 1; i++){
+                            if(data[i] > data[i+1]){
+                                swap(data, i, i+1);
+                            }
+                        }
+                    } while(len--)
+                    
+                    return data;
+                };
+                var result = document.getElementById("input1").addEventListener("keyup", function(){
+                    document.getElementById("input2").addEventListener("keyup", function(){
+                        var msg = document.getElementById("msg");
+                        var input1 = document.getElementById("input1").value;
+                        var input2 = document.getElementById("input2").value;
+                        var arr1 = input1.toLowerCase().split("");
+                        var arr2 = input2.toLowerCase().split("");
+                        if(input1.length == input2.length){
+                            console.clear();
+                            console.log("\n\nNew String\n\nRAW input1 string " + arr1);
+                            console.log("RAW input2 string " + arr2);
+                            var len2 = arr2.length;
+                            var len = arr1.length;
+                            for(var i = 0; i < len; i++){
+                                arr1[i] = arr1[i].charCodeAt(0);
+                            }
+                            for(var i = 0; i < len2; i++){
+                                arr2[i] = arr2[i].charCodeAt(0);
+                            }
+                            console.log("Input1 unicode version " + arr1);
+                            console.log("Input2 unicode version " + arr2);
+                            sort(arr1);
+                            sort(arr2);
+                            console.log("Sorted Input1 unicode " + arr1);
+                            console.log("Sorted Input2 unicode " + arr2);
+                            if (arr1.toString() === arr2.toString()){
+                                console.log("This is an anagram!");
+                                msg.innerHTML = "ANAGRAM!!"
+                                
+                            }else{
+                                console.log("Not an anagram!");
+                                msg.innerHTML = "NOT AN ANAGRAM!!"
+                            }    
+                        }else{
+                            msg.innerHTML = "";
+                        }
+                    
+                    })
+                    
+                });
+            })();
+        </script>
+    </body>
+</html>
