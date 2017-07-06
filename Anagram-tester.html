@@ -2,21 +2,150 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Anagram Tester</title>
+        <style type="text/css">
+            body {
+                width: 100vw;
+                margin: 0 auto;
+                box-sizing: border-box;
+                font-family: monospace, serif;
+                -webkit-transition: background-color 0.5s ease;
+                -ms-transition: background-color 0.5s ease;
+                -moz-transition: background-color 0.5s ease;
+                -o-transition: background-color 0.5s ease;
+                transition: background-color 0.5s ease;
+            }
+            
+            .text-lower{
+                font-size: 0.75em;
+            }
+            #top-text{
+                margin: 5vw 25vw;
+                margin-bottom: 1em;
+            }
+            
+            #input1, #input2{
+                border: 0.25em solid #AAA;
+                width: 50vw;
+                margin: 0.5% 25vw;
+                padding: 0.5em;
+                font-size: 1.2em;
+                -webkit-transition: width 0.5s ease;
+                -ms-transition: width 0.5s ease;
+                -moz-transition: width 0.5s ease;
+                -o-transition: width 0.5s ease;
+                transition: width 0.5s ease;
+            }
+            #msg, #time {
+                width: 50vw;
+                margin: 0.5vw 25vw;
+            }
+/*            ***********MOBILE QUERY FOR LANDSCAPE ORIENTATION***************/
+            @media screen 
+                and (min-device-width: 600px)
+                and (max-device-width: 750px) 
+                and (orientation: landscape){
+                    body{
+                        background-color: gray;
+                    }
+                    body, #wrapper, #input1, #input2, #msg, #top-text, #time{
+                        width: 100vw;
+                        margin: 0 auto;
+                    }
+                    #input1, #input2{
+                        border-right: none;
+                        border-left: none;
+                        border-top: 0.25em solid gray;
+                        border-bottom: 0.25em solid gray;
+                    }
+                    #top-text{
+                        padding: 1em;
+                        font-size: 1.25em;
+                    }
+            }
+/*            *********MOBILE QUERY************/
+            @media screen and (min-width: 0px) and (max-width: 380px){
+                body{
+                    background-color: gray;
+                }
+                body, #wrapper, #input1, #input2, #msg, #top-text, #time{
+                    width: 100vw;
+                    margin: 0 auto;
+                }
+                #input1, #input2{
+                    border-right: none;
+                    border-left: none;
+                    border-top: 0.25em solid gray;
+                    border-bottom: 0.25em solid gray;
+                }
+                
+                #top-text{
+                    padding: 1em;
+                    font-size: 1.25em;
+                }
+                #time{
+                    width: 25vw;
+                    margin: 0 auto;
+                }
+            }
+        </style>
     </head>
     <body>
-        <input id="input1" type="text" placeholder="Enter word here first">
-        <input id="input2" type="text" placeholder="Enter word last">
-        <br>
-        <label id="msg"></label>
+        <div id="wrapper">
+            <h3 id="top-text">Check two strings if they are anagrams!</h3>
+            <input id="input1" type="text" placeholder="Enter word here first">
+            <input id="input2" type="text" placeholder="Enter word last">
+            <br>
+            <h2 id="msg"></h2>
+            <span id="time"></span>
+        </div>
+        
         <script>
+            //Quicksort IIFE//
+            var quickSort = (function () {
+                    function partition(array, left, right) {
+                        var cmp = array[right - 1],
+                            minEnd = left,
+                            maxEnd;
+                        for (maxEnd = left; maxEnd < right - 1; maxEnd += 1) {
+                            if (array[maxEnd] <= cmp) {
+                                swap(array, maxEnd, minEnd);
+                                minEnd += 1;
+                            }
+                        }
+                        swap(array, minEnd, right - 1);
+                        return minEnd;
+                    }
+
+                    function swap(array, i, j) {
+                        var temp = array[i];
+                        array[i] = array[j];
+                        array[j] = temp;
+                        return array;
+                    }
+
+                    function quickSort(array, left, right) {
+                        if (left < right) {
+                            var p = partition(array, left, right);
+                            quickSort(array, left, p);
+                            quickSort(array, p + 1, right);
+                        }
+                        return array;
+                    }
+
+                    return function (array) {
+                        return quickSort(array, 0, array.length);
+                    };
+                }());
+            
             (function(){
                 var swap = function(data, a, b){
                     var tmp = data[a];
                     data[a] = data[b];
                     data[b] = tmp;
                 };
-                var sort = function(data){
+                var bubbleSort = function(data){
                     var len = data.length;
                     do {
                         for(var i = 0; i < len - 1; i++){
@@ -28,46 +157,69 @@
                     
                     return data;
                 };
-                var result = document.getElementById("input1").addEventListener("keyup", function(){
                     document.getElementById("input2").addEventListener("keyup", function(){
+                        var time = document.getElementById("time");
                         var msg = document.getElementById("msg");
                         var input1 = document.getElementById("input1").value;
                         var input2 = document.getElementById("input2").value;
                         var arr1 = input1.toLowerCase().split("");
                         var arr2 = input2.toLowerCase().split("");
-                        if(input1.length == input2.length){
-                            console.clear();
-                            console.log("\n\nNew String\n\nRAW input1 string " + arr1);
-                            console.log("RAW input2 string " + arr2);
+                        if(input1.length && input2.length){
+                            time.innerHTML = "";
+                            if(input1.length == input2.length){
+                                //uncomment for logging
+//                            console.log("\n\nNew String\n\nRAW input1 string " + arr1);
+//                            console.log("RAW input2 string " + arr2);
                             var len2 = arr2.length;
-                            var len = arr1.length;
+                            var len = arr1.length;    
                             for(var i = 0; i < len; i++){
                                 arr1[i] = arr1[i].charCodeAt(0);
                             }
                             for(var i = 0; i < len2; i++){
                                 arr2[i] = arr2[i].charCodeAt(0);
                             }
-                            console.log("Input1 unicode version " + arr1);
-                            console.log("Input2 unicode version " + arr2);
-                            sort(arr1);
-                            sort(arr2);
-                            console.log("Sorted Input1 unicode " + arr1);
-                            console.log("Sorted Input2 unicode " + arr2);
+                                //****uncomment for logging****
+                                
+//                            console.log("Input1 unicode version " + arr1);
+//                            console.log("Input2 unicode version " + arr2);
+                                
+                            var begin = Date.now();   
+                            quickSort(arr1);
+                            quickSort(arr2);
+//                            bubbleSort(arr1);
+//                            bubbleSort(arr2);
+                            var end = Date.now();
+                                
+                            console.log("Elements count: " + (arr1.length + arr2.length));
+                            var timeSpent = (end-begin)/1000;
+                            if(timeSpent > 0.001){
+                              time.innerHTML = timeSpent + " sec"; 
+                            }
+                            
+                                
+                                //uncomment for logging
+                                
+//                            console.log("Sorted Input1 unicode " + arr1);
+//                            console.log("Sorted Input2 unicode " + arr2);
+                                
                             if (arr1.toString() === arr2.toString()){
                                 console.log("This is an anagram!");
-                                msg.innerHTML = "ANAGRAM!!"
+                                msg.innerHTML = "ANAGRAM!!";
                                 
                             }else{
                                 console.log("Not an anagram!");
-                                msg.innerHTML = "NOT AN ANAGRAM!!"
+                                msg.innerHTML = "NOT AN ANAGRAM!!";
                             }    
                         }else{
-                            msg.innerHTML = "";
+                            msg.innerHTML = "Character count doesn't match!";
+                            msg.ToggleClass = "text-lower";
                         }
+                    }else{
+                        msg.innerHTML = "";
+                    }
+                        
                     
                     })
-                    
-                });
             })();
         </script>
     </body>
